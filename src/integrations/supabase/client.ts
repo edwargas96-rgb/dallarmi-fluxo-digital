@@ -27,20 +27,26 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 }
 
 
+// Demo standalone (Dallarmi Fluxo Digital): sem projeto Supabase próprio ainda,
+// então caímos num endpoint inofensivo em vez de travar o app. As telas que
+// dependem de dados aparecem vazias/com erro de rede, mas nada quebra.
+const SUPABASE_PLACEHOLDER_URL = 'https://placeholder.supabase.co';
+const SUPABASE_PLACEHOLDER_KEY = 'sb_publishable_placeholder';
+
 function createSupabaseClient() {
   // Use import.meta.env for client-side (Vite build-time replacement)
   // Fall back to process.env for SSR (server-side rendering)
-  const SUPABASE_URL = import.meta.env['VITE_SUPABASE_URL'] || process.env['SUPABASE_URL'];
-  const SUPABASE_PUBLISHABLE_KEY = import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY'] || process.env['SUPABASE_PUBLISHABLE_KEY'];
+  const SUPABASE_URL =
+    import.meta.env['VITE_SUPABASE_URL'] || process.env['SUPABASE_URL'] || SUPABASE_PLACEHOLDER_URL;
+  const SUPABASE_PUBLISHABLE_KEY =
+    import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY'] ||
+    process.env['SUPABASE_PUBLISHABLE_KEY'] ||
+    SUPABASE_PLACEHOLDER_KEY;
 
-  if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-    const missing = [
-      ...(!SUPABASE_URL ? ['SUPABASE_URL'] : []),
-      ...(!SUPABASE_PUBLISHABLE_KEY ? ['SUPABASE_PUBLISHABLE_KEY'] : []),
-    ];
-    const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Defina as variáveis VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY.`;
-    console.error(`[Supabase] ${message}`);
-    throw new Error(message);
+  if (SUPABASE_URL === SUPABASE_PLACEHOLDER_URL) {
+    console.warn(
+      '[Supabase] Nenhum projeto configurado (VITE_SUPABASE_URL/VITE_SUPABASE_PUBLISHABLE_KEY ausentes). Usando endpoint placeholder — dados não vão carregar.',
+    );
   }
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
