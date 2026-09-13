@@ -93,7 +93,7 @@ export function AppLayout({
 
   const marca = (
     <div className="flex items-center gap-3 px-5 py-6">
-      <img src="/logo.svg" alt="" className="size-9 shrink-0" />
+      <img src="/logo.png" alt="" className="size-9 shrink-0 rounded-xl" />
       <div>
         <div className="font-display text-lg leading-none font-bold tracking-tight text-sidebar-accent-foreground">
           DALLARMI <span className="text-sidebar-primary">FLUXO DIGITAL</span>
